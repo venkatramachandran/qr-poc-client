@@ -8,15 +8,17 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "Official Ubuntu 12.04 daily Cloud Image amd64 (VirtualBox 4.1.12)"
   config.vm.box_url = "https://cloud-images.ubuntu.com/vagrant/precise/current/precise-server-cloudimg-amd64-vagrant-disk1.box"
   config.vm.network :forwarded_port, guest: 80, host: 8080
+  config.vm.network :forwarded_port, guest: 8124, host: 8124
   config.vm.network :private_network, ip: "192.168.33.12"
   config.ssh.forward_agent = true
   config.ssh.username = "vagrant"
   config.vm.provider :virtualbox do |vb|
-    vb.gui = true
+    vb.gui = false
     vb.customize ["modifyvm", :id, "--memory", "2048"]
     vb.name = "poc"
+    vb.cpus = 2
   end
 
-   config.vm.provision 'shell', :inline =>
-     "curl -sL https://deb.nodesource.com/setup | sudo bash -;sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10;echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' | sudo tee /etc/apt/sources.list.d/mongodb.list;sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10;echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' | sudo tee /etc/apt/sources.list.d/mongodb.list;sudo apt-get update;sudo apt-get install apache2 git nodejs mongodb-org -y; git clone https://github.com/venkyramachandran/qr-poc-server; git clone https://github.com/venkyramachandran/qr-poc-client; cd qr-poc-client/apache-conf/; sudo cp qr /etc/apache/sites-enabled/;sudo service apache2 restart;cd qr-poc-server; sudo npm install; npm start;"
+   config.vm.provision 'shell', :privileged => false, :inline =>
+     "curl -sL https://deb.nodesource.com/setup | sudo bash -;sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10;echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' | sudo tee /etc/apt/sources.list.d/mongodb.list;sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10;echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' | sudo tee /etc/apt/sources.list.d/mongodb.list;sudo apt-get update;sudo apt-get install apache2 git nodejs mongodb-org -y; git clone https://github.com/venkyramachandran82/qr-poc-server ~/qr-poc-server; git clone https://github.com/venkyramachandran82/qr-poc-client ~/qr-poc-client; cd ~/qr-poc-client/apache-conf/; sudo cp qr /etc/apache2/sites-enabled/;sudo a2dissite default;sudo service apache2 restart;cd ~; cd qr-poc-server; sudo npm install; npm start;"
 end
