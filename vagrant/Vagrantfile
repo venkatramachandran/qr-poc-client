@@ -17,5 +17,5 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
    config.vm.provision 'shell', :inline =>
-     "sudo curl -sL https://deb.nodesource.com/setup | sudo bash -;sudo apt-get install apache2 git nodejs mongodb-org -y; git clone https://github.com/venkyramachandran/qr-poc-server; git clone https://github.com/venkyramachandran/qr-poc-client; cd qr-poc-server; sudo npm install; npm start;"
+     "curl -sL https://deb.nodesource.com/setup | sudo bash -;sudo apt-get install apache2 git nodejs mongodb-org -y; git clone https://github.com/venkyramachandran/qr-poc-server; git clone https://github.com/venkyramachandran/qr-poc-client; cd qr-poc-client/apache-conf/; sudo cp qr /etc/apache/sites-enabled/;sudo service apache2 restart;cd qr-poc-server; sudo npm install; npm start;"
 end
