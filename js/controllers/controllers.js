@@ -21,24 +21,39 @@ app.controller('QRCtrl', function($scope, $modal, Documents){
     startingDay: 1
   };
 
+  $scope.startDate = '1-Jul-2003';
+  $scope.endDate = '4-Apr-2014';
+  $scope.name = 'V';
+
   $scope.create = function() {
-  	var d = {};
-  	d.documentType = "relievingLetter";
-  	d.documentFields = [];
-  	d.documentFields.push({"fieldName":"startDate", "fieldValue": $scope.startDate});
-  	d.documentFields.push({"fieldName":"startDate", "fieldValue": $scope.startDate});
-  	Documents.create(d, function(data){
-  		$scope.openModal(data);
-  	})
+    var d = {};
+    d.documentType = "relievingLetter";
+    d.documentFields = [];
+    d.documentFields.push({"fieldName":"startDate", "fieldValue": $scope.startDate});
+    d.documentFields.push({"fieldName":"startDate", "fieldValue": $scope.endDate});
+    d.documentFields.push({"fieldName":"name", "fieldValue": $scope.name});
+    Documents.create(d, function(data){
+        $scope.openModal(data);
+    })
   };
 
   $scope.openModal = function (data) {
-  	$scope.imageData = data;
+    $scope.data = data;
     $scope.modalInstance = $modal.open({
-      templateUrl: 'image.html'
+      templateUrl: 'image.html',
+      controller: 'QRCodeDisplayController',
+      resolve: {
+        data : function(){
+          return $scope.data;
+        }
+      }
     });
-  };
+  }; 
+});
+
+app.controller('QRCodeDisplayController', function($scope, $modal, data){
+  $scope.data = data;
   $scope.ok = function () {
-    $modalInstance.close();
-  };  
+    $modal.hide();
+  };
 });
